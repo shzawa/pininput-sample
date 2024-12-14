@@ -1,37 +1,45 @@
 import "./reset.css"
 import "./index.css"
-import { Manual } from "./components/Manual";
-import { FormEvent, useState } from "react";
+import { PinInput } from "./components/PinInput";
+import { Stack } from "./components/Stack";
+import { BasicPinInput } from "./components/BasicPinInput";
+import { FormProvider } from "./FormProvider";
+import { Button } from "./components/Button";
 
 export default function App() {
-  const [pin, setPin] = useState('')
-  const [invalid, setInvalid] = useState(false)
-
-  const submit = () => {
-    setInvalid(true)  // 検証のため絶対失敗させてる
-    console.log(pin)
-  }
-  const handleFormSubmit = (e: FormEvent<Element>) => {
-    e.preventDefault()
-    submit()
-  }
-  const handlePinInputSubmit = () => {
-    submit()
-  }
-
   return (
-      <>
-        <form onSubmit={handleFormSubmit}>
-          <Manual
-            onSubmit={handlePinInputSubmit}
-            onChange={setPin}
-            invalid={invalid}
-            onComplete={() => {
-              if (invalid) setInvalid(false)
-            }}
-          />
-          <button type="submit">登録</button>
-        </form>
-      </>
+    <>
+      <div>
+        <p>サンプルほぼそのまま</p>
+        <FormProvider>
+          {({ invalid, onChange, onFormSubmit }) => (
+            <form onSubmit={onFormSubmit}>
+              <Stack $justifyContent="center" $alignItems="center" style={{ gap: 8 }}>
+                <BasicPinInput onChange={onChange} invalid={invalid} />
+                <Button type="submit">認証</Button>
+              </Stack>
+            </form>
+          )}
+        </FormProvider>
+      </div>
+      <div>
+        <p>改変版</p>
+        <FormProvider>
+          {({ invalid, onChange, onComplete, onFormSubmit, onPinInputSubmit }) => (
+            <form onSubmit={onFormSubmit}>
+              <Stack $justifyContent="center" $alignItems="center" style={{ gap: 8 }}>
+                <PinInput
+                  onSubmit={onPinInputSubmit}
+                  onChange={onChange}
+                  invalid={invalid}
+                  onComplete={onComplete}
+                  />
+                <Button type="submit" disabled={invalid}>認証</Button>
+              </Stack>
+            </form>
+          )}
+        </FormProvider>
+      </div>
+    </>
   )
 }
