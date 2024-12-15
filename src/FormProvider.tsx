@@ -1,41 +1,42 @@
-import { FC, FormEvent, ReactNode, useState } from "react"
+import { FC, ReactNode, useState } from "react"
+import { usePinInputField } from "./usePinInputField"
 
 type Props = {
   children: (props: {
-    invalid: boolean
-    onFormSubmit: (e: FormEvent<Element>) => void
-    onPinInputSubmit: () => void
-    onChange: (v: string) => void
-    onComplete: () => void
+    onSubmit: () => void
+    pinInputFieldProps: ReturnType<typeof usePinInputField>
+    isSubmitButtonDisabled: boolean
   }) => ReactNode
+  pinLength: number
 }
-export const FormProvider: FC<Props> = ({ children }) => {
+export const FormProvider: FC<Props> = ({ children, pinLength }) => {
   const [pin, setPin] = useState('')
-  const [invalid, setInvalid] = useState(false)
+  const [isPinInvalid, setIsPinInvalid] = useState(false)
 
-  const submit = () => {
-    setInvalid(true)  // 検証のため絶対失敗させてる
+  const onSubmit = () => {
+    setIsPinInvalid(true)  // 検証のため絶対失敗させてる
     console.log(pin)
-  }
-  const onFormSubmit = (e: FormEvent<Element>) => {
-    e.preventDefault()
-    submit()
-  }
-  const onPinInputSubmit = () => {
-    submit()
   }
   const onChange = (value: string) => {
     setPin(value)
   }
   const onComplete = () => {
-    if (invalid) setInvalid(false)
+    if (isPinInvalid) {
+      setIsPinInvalid(false)
+    }
   }
 
-  return children({
-    invalid,
-    onFormSubmit,
-    onPinInputSubmit,
+  const pinInputFieldProps = usePinInputField({
+    invalid: isPinInvalid,
     onChange,
-    onComplete
+    onComplete,
+    valueLength: pinLength
+  })
+  const isSubmitButtonDisabled = isPinInvalid || !pinInputFieldProps.isCompleted
+
+  return children({
+    onSubmit,
+    pinInputFieldProps,
+    isSubmitButtonDisabled,
   })
 }

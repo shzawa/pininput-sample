@@ -3,16 +3,16 @@ import { Stack } from './Stack'
 import { Field, FieldRootProps } from '@ark-ui/react'
 import { PinInputField } from './PinInputField'
 
-const PIN_INPUT_FIELD_LENGTH = 4
-
 // 公式サンプルほぼそのまま
 // https://ark-ui.com/react/docs/components/pin-input#examples
 
 export const BasicPinInput = ({
+  valueLength,
   onChange,
   invalid: parentInvalid,
   fieldProps,
 }: {
+  valueLength: number
   onChange: (v: string) => void
   invalid: boolean
   fieldProps?: Omit<FieldRootProps, 'invalid'>
@@ -25,7 +25,7 @@ export const BasicPinInput = ({
           <Stack $direction='row' style={{ gap: 8 }}>
             {
               Array
-                .from({ length: PIN_INPUT_FIELD_LENGTH }, (_, index) => index)
+                .from({ length: valueLength }, (_, index) => index)
                 .map((id, index) => (
                   <PinInputField $invalid={parentInvalid} key={id} index={index} />
                 ))
