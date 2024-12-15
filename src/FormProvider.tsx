@@ -32,11 +32,18 @@ export const FormProvider: FC<Props> = ({ children, pinLength }) => {
     onComplete,
     valueLength: pinLength
   })
-  const isSubmitButtonDisabled = isPinInvalid || !pinInputFieldProps.isCompleted
+  const isSubmitButtonDisabled = (isPinInvalid || !pinInputFieldProps.isCompleted)
 
-  return children({
-    onSubmit,
-    pinInputFieldProps,
-    isSubmitButtonDisabled,
-  })
+  return (
+    <form onSubmit={(e) => {
+      e.preventDefault()
+      onSubmit()
+    }}>
+      {children({
+        onSubmit,
+        pinInputFieldProps,
+        isSubmitButtonDisabled,
+      })}
+  </form>
+  )
 }
